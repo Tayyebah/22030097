@@ -1,0 +1,122 @@
+Summary Statistics:
+summary(Book1_Dataset_R)
+
+About Datset:
+str(Book1_Dataset_R)
+
+
+
+Exploratory Data Analysis:
+str(Book1_Dataset_R)     # Structure of the dataset
+summary(Book1_Dataset_R) # Summary statistics
+head(Book1_Dataset_R)    # First few rows of the dataset
+
+
+Data Cleaning and Pre processing:
+cleaned_data <- na.omit(Book1_Dataset_R)
+
+
+
+Selection of Features
+features <- cleaned_data[, -c(1, 3, 24)]  # Adjust indices as needed
+
+Splitting Data into Training sets
+set.seed(123)  # Set seed for reproducibility
+train_index <- sample(1:nrow(features), 0.8 * nrow(features), replace = FALSE)  # 80% training data
+train_data <- features[train_index, ]
+test_data <- features[-train_index, ]
+
+
+
+Model Building Linear Regression
+lm_model <- lm(price ~ ., data = train_data)
+
+
+
+RMSE Testing set
+# Ensure consistent levels for the 'fuelsystem' variable
+test_data$fuelsystem <- factor(test_data$fuelsystem, levels = levels(train_data$fuelsystem))
+
+# Make predictions
+predicted_prices <- predict(lm_model, newdata = test_data)
+actual_prices <- test_data$price
+rmse <- sqrt(mean((actual_prices - predicted_prices)^2))
+print(rmse)
+
+
+Lm Model Summary:
+summary(lm_model)
+
+
+Visualisation: 
+# Scatter plot of carlength vs. price
+plot(Book1_Dataset_R$carlength, Book1_Dataset_R$price, 
+     xlab = "Car Length", ylab = "Price", 
+     main = "Scatter Plot of Car Length vs. Price")
+
+# Boxplot of price by fuel type
+boxplot(price ~ fueltype, data = Book1_Dataset_R,
+        xlab = "Fuel Type", ylab = "Price",
+        main = "Boxplot of Price by Fuel Type")
+
+# Histogram of price
+hist(Book1_Dataset_R$price,
+     xlab = "Price", ylab = "Frequency",
+     main = "Histogram of Price")
+
+
+Testing Data: 
+Paste these one by one: 
+test_data <- test_data[!(test_data$cylindernumber %in% "three"),]
+
+test_data$cylindernumber <- factor(test_data$cylindernumber, levels = levels(train_data$cylindernumber))
+
+predicted_prices <- predict(lm_model, newdata = test_data)
+
+
+
+Other Visuals:
+Scatter Plot Diagram 
+plot(Book1_Dataset_R$carlength, Book1_Dataset_R$price,
+     xlab = "Car Length", ylab = "Price",
+     main = "Scatter Plot of Car Length vs. Price")
+
+
+BoxPlot Diagram:
+boxplot(price ~ fueltype, data = Book1_Dataset_R,
+        xlab = "Fuel Type", ylab = "Price",
+        main = "Boxplot of Price by Fuel Type")
+Histogram:
+hist(Book1_Dataset_R$price,
+     xlab = "Price", ylab = "Frequency",
+     main = "Histogram of Price")
+
+
+Training Data:
+test_data$fuelsystem <- factor(test_data$fuelsystem, levels = levels(train_data$fuelsystem))
+
+
+
+Making Predictions:
+predicted_prices <- predict(lm_model, newdata = test_data)
+actual_prices <- test_data$price
+rmse <- sqrt(mean((actual_prices - predicted_prices)^2))
+print(rmse)
+
+
+Sample test for cylinder number:
+test_data$cylindernumber <- factor(test_data$cylindernumber, levels = levels(train_data$cylindernumber))
+
+
+Random Forest regression:
+# Install and load randomForest package
+if (!require(randomForest)) install.packages("randomForest")
+library(randomForest)
+
+# Build and train the random forest model
+rf_model <- randomForest(price ~ ., data = train_data)
+
+# Predict using the random forest model
+predicted_rf_prices <- predict(rf_model, newdata = test_data)
+rmse_rf <- sqrt(mean((actual_prices - predicted_rf_prices)^2))
+print(rmse_rf)
